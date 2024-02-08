@@ -1,7 +1,8 @@
 # Четвертая лабораторная работа
 <p align="center">
-    <img src="https://github.com/JABAN111/Fourth-Web-Lab/assets/130747945/9ed27a9a-b4a1-4e8f-9f4e-4f8ab3a9c0ad">
+    <img src="https://github.com/JABAN111/fourthWebLabFront/assets/130747945/3545f907-7536-4c2b-a3ff-f332d6f5f601"/>
 </p>
+
 
 ## Переписать приложение из предыдущей лабораторной работы с использованием следующих технологий:
 
