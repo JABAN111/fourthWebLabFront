@@ -1,0 +1,32 @@
+<div>
+  <h2>Регистрация</h2>
+  <form (ngSubmit)="registerNewUser(registrationLogin, registrationPassword)">
+    <label for="loginRegistration">Логин:</label>
+    <input type="text" id="loginRegistration" [(ngModel)]="registrationLogin" name="login" required>
+
+    <label for="passwordRegistration">Пароль:</label>
+    <input type="password" id="passwordRegistration" [(ngModel)]="registrationPassword" name="password" required>
+
+    <button class="enter" type="submit">Зарегистрироваться</button>
+  </form>
+</div>
+<div>
+  <h2>Войти</h2>
+  <form (ngSubmit)="logIn(loginLogin, loginPassword)">
+    <label for="loginLogin">Логин:</label>
+    <input type="text" id="loginLogin" [(ngModel)]="loginLogin" name="login" required>
+
+    <label for="passwordLogIn">Пароль:</label>
+    <input type="password" id="passwordLogIn" [(ngModel)]="loginPassword" name="password" required>
+
+    <button class="enter" type="submit">Войти</button>
+  </form>
+
+</div>
+<nav>
+  @if (validUser) {
+    <button class="toMainPage" routerLink="/main">К главной странице</button>
+  } @else {
+    <button class="toMainPage" disabled="true">К главной странице</button>
+  }
+</nav>

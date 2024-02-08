@@ -1,0 +1,29 @@
+html,body{
+  margin: 0;
+  padding: 0;
+}
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 30%;
+}
+.header-info {
+  text-align: center;
+  width: 432px;
+  font-size: 27px;
+  font-family: "Sitka Heading", serif;
+}
+.header-images{
+  width: 71px;
+  height: 71px;
+}
+
+#header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 30%;
+}

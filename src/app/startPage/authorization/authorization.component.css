@@ -1,0 +1,53 @@
+.forms-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+div {
+  width: 300px;
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.enter {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.enter:hover {
+  background-color: #45a049;
+}
+.toMainPage{
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.toMainPage:hover {
+  background-color: #45a049;
+}
+button.toMainPage:disabled {
+  background-color: #ccc; /* Цвет фона для выключенной кнопки */
+  color: #666; /* Цвет текста для выключенной кнопки */
+  cursor: not-allowed; /* Изменение курсора для выключенной кнопки */
+}

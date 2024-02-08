@@ -1,0 +1,75 @@
+<head>
+  <title>Основная страница</title>
+  <style>
+    .canvas-container {
+      border: 2px solid #ccc;
+      display: inline-block;
+      overflow: hidden;
+      transition: width 0.3s, height 0.3s;
+      position: fixed;
+      top: 0;
+      right: 0;
+      margin-top: 200px;
+      margin-right: 50px;
+    }
+
+    canvas {
+      image-rendering: pixelated;
+      max-width: 100%;
+      display: block;
+    }
+  </style>
+
+</head>
+<head-data></head-data>
+<!--кнопки-->
+<div class="form-container">
+  <form #form="ngForm">
+    <div class="form-group">
+      <label for="xCoordinate">Координата X</label>
+      <p-multiSelect
+        [options]="xOptions"
+        [(ngModel)]="selectedX"
+        ngModel
+        [style]="{width: '30%'}"
+        name="xCoordinate"
+        id="xCoordinate"
+      ></p-multiSelect>
+    </div>
+    <div class="form-group">
+
+
+      <label for="yCoordinate">Координата Y</label>
+      <p-slider id="yCoordinate"
+                [(ngModel)]="selectedY"
+                name="coorName"
+                [min]="-5"
+                [max]="5"
+                class="w-full"
+                [ngModelOptions]="{standalone: true}"
+      ></p-slider>
+
+    </div>
+
+    <div class="form-group">
+      <label for="radius">Радиус области</label>
+      <p-multiSelect
+        [options]="radiusOptions"
+        [(ngModel)]="selectedRadius"
+        ngModel
+        name="radius"
+        id="radius"
+        [style]="{width: '30%'}"
+        (onChange)="updateRadius()"
+      ></p-multiSelect>
+    </div>
+    <button pButton pRipple label="Отправить" class="p-button-success" (click)="submitForm();"></button>
+    <button pButton pRipple label="Очистить все" class="p-button-success" (click)="clearAll();"></button>
+  </form>
+  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="zoomIn();"></p-button>
+  <p-button label="Normal" icon="pi pi-check" (click)="zoomToDefault();"></p-button>
+</div>
+
+<div class="canvas-container" [style.width.px]="w" [style.height.px]="h">
+<canvas #myCanvas (click)="mouseHandler($event)" width="300" height="300"></canvas>
+</div>
