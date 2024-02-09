@@ -1,11 +1,14 @@
 <div>
   <h2>Регистрация</h2>
-  <form (ngSubmit)="registerNewUser(registrationLogin, registrationPassword)">
+  <form (ngSubmit)="registerNewUser(registrationLogin, registrationPassword,registrationPasswordVerification)">
     <label for="loginRegistration">Логин:</label>
     <input type="text" id="loginRegistration" [(ngModel)]="registrationLogin" name="login" required>
 
     <label for="passwordRegistration">Пароль:</label>
     <input type="password" id="passwordRegistration" [(ngModel)]="registrationPassword" name="password" required>
+
+    <label for="passwordRegistrationVerification">Повторите пароль:</label>
+    <input type="password" id="passwordRegistrationVerification" [(ngModel)]="registrationPasswordVerification" name="password" required>
 
     <button class="enter" type="submit">Зарегистрироваться</button>
   </form>
@@ -19,10 +22,13 @@
     <label for="passwordLogIn">Пароль:</label>
     <input type="password" id="passwordLogIn" [(ngModel)]="loginPassword" name="password" required>
 
-    <button class="enter" type="submit">Войти</button>
+    <button pButton class="enter" type="submit">Войти</button>
   </form>
-
 </div>
+
+<p-messages [showTransitionOptions]="'500ms'" [hideTransitionOptions]="'500ms'"></p-messages>
+<button type="button" pButton class="p-button-secondary" (click)="clear()" label="Почистить уведомления:D"></button>
+
 <nav>
   @if (validUser) {
     <button class="toMainPage" routerLink="/main">К главной странице</button>
