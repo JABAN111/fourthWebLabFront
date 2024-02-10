@@ -1,10 +1,15 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, Injectable, ViewChild} from "@angular/core";
 import {HeaderComponent} from "../header/header.component";
 import {SliderModule} from "primeng/slider";
 import {FormsModule} from "@angular/forms";
 import {MultiSelectModule} from "primeng/multiselect";
 import {RippleModule} from "primeng/ripple";
 import {ButtonModule} from "primeng/button";
+import {
+  CanActivate, Router,
+  RouterOutlet,
+} from "@angular/router";
+import {UserService} from "../test/auth/UserService";
 
 @Component({
   selector: "main",
@@ -17,10 +22,25 @@ import {ButtonModule} from "primeng/button";
     RippleModule,
     ButtonModule,
   ],
-  templateUrl: "mainPage.component.html"
+  templateUrl: "mainPage.component.html",
+  providers: [UserService,RouterOutlet]
 })
+@Injectable()
+export class MainPageComponent implements AfterViewInit, CanActivate {
 
-export class MainPageComponent implements AfterViewInit{
+  constructor(private userService:UserService,private router: Router) {
+  }
+
+  canActivate(){
+      if(UserService.validUser){
+        return true;
+      }
+      else{
+        //тест ссылка на accessDenied
+        this.router.navigate(['/accessDenied'])
+        return false;
+      }
+    }
   @ViewChild('myCanvas', {static: true})
   canvas!: ElementRef<HTMLCanvasElement>;
   private ctx!: CanvasRenderingContext2D | null;
@@ -65,8 +85,6 @@ export class MainPageComponent implements AfterViewInit{
     const x = ((((clickedX - w / 2) / this.hatchGap) / 2) * this.currentRadius).toFixed(3);
     const y = ((-((clickedY - h / 2) / this.hatchGap) / 2) * this.currentRadius).toFixed(3);
 
-    // Assuming you have a function 'sendCoordinates' defined somewhere.
-    // this.sendCoordinates(parseFloat(x), parseFloat(y));
     this.printDotOnGraph(+x,+y,true);
     return {
       x: parseFloat(x),
@@ -92,8 +110,8 @@ export class MainPageComponent implements AfterViewInit{
     this.ctx?.fillText(`${this.currentRadius}`, this.w / 2 + indent, this.h / 2 - this.hatchGap * 2);
 
     //ось y, отрицательная часть
-    this.ctx?.fillText(`${this.currentRadius / 2}`, this.w / 2 + indent, this.h / 2 + this.hatchGap);
-    this.ctx?.fillText(`${this.currentRadius}`, this.w / 2 + indent, this.h / 2 + this.hatchGap * 2);
+    this.ctx?.fillText(`${-this.currentRadius / 2}`, this.w / 2 + indent, this.h / 2 + this.hatchGap);
+    this.ctx?.fillText(`${-this.currentRadius}`, this.w / 2 + indent, this.h / 2 + this.hatchGap * 2);
   }
   drawAxesAndHatch(): void {
     // y ось
@@ -144,25 +162,10 @@ export class MainPageComponent implements AfterViewInit{
       name: 'first_quarter',
       draw: () => {
         this.ctx?.beginPath();
-        this.ctx!.fillStyle = "#0B04D5";
-        this.ctx?.moveTo(this.w / 2, this.h / 2 - this.hatchGap * 2);
-        this.ctx?.lineTo(this.w / 2 + this.hatchGap, this.h / 2 - this.hatchGap * 2);
-        this.ctx?.lineTo(this.w / 2 + this.hatchGap, this.h / 2);
-        this.ctx?.lineTo(this.w / 2, this.h / 2);
+        this.ctx!.fillStyle = "#0b04D5";
 
-        this.ctx?.fill();
-        this.ctx?.stroke();
-      }
-    },
-    {
-      name: "second_quarter",
-      draw: () => {
-        this.ctx?.beginPath();
-        this.ctx!.fillStyle = "#0B04D5";
-
-        this.ctx?.moveTo(this.w / 2, this.h / 2 - this.hatchGap);
-        this.ctx?.lineTo(this.w / 2 - this.hatchGap, this.h / 2);
-        this.ctx?.lineTo(this.w / 2, this.h / 2);
+        this.ctx?.moveTo(this.w/2, this.h/2);
+        this.ctx?.arc(this.w/2,this.h/2,this.hatchGap*2,0,-Math.PI/2,true);
 
         this.ctx?.fill();
         this.ctx?.stroke();
@@ -171,11 +174,27 @@ export class MainPageComponent implements AfterViewInit{
     {
       name: "third_quarter",
       draw: () => {
-        this.ctx?.beginPath()
-        this.ctx!.fillStyle = "#0B04D5"
+        this.ctx?.beginPath();
+        this.ctx!.fillStyle = "#0b04D5";
 
-        this.ctx?.moveTo(this.w / 2, this.h / 2);
-        this.ctx?.arc(this.w / 2, this.h / 2, this.hatchGap * 2, Math.PI, Math.PI / 2, true);
+        this.ctx?.moveTo(this.w/2-this.hatchGap*2, this.h/2);
+        this.ctx?.lineTo(this.w/2,this.h/2+this.hatchGap);
+        this.ctx?.lineTo(this.w/2,this.h/2);
+
+        this.ctx?.fill();
+        this.ctx?.stroke();
+      }
+    },
+    {
+      name: "fourth_quarter",
+      draw: ()=>{
+        this.ctx?.beginPath();
+        this.ctx!.fillStyle="#0B04D5";
+
+        this.ctx?.moveTo(this.w/2,this.h/2+this.hatchGap);
+        this.ctx?.lineTo(this.w/2+this.hatchGap*2,this.h/2+this.hatchGap);
+        this.ctx?.lineTo(this.w/2+this.hatchGap*2,this.h/2);
+        this.ctx?.lineTo(this.w/2,this.h/2);
 
         this.ctx?.fill();
         this.ctx?.stroke();
@@ -192,7 +211,7 @@ export class MainPageComponent implements AfterViewInit{
 
   selectedY: number = 2.5;
 
-  radiusOptions = ['-3', '-2', '-1','0', '1', '2', '3', '4', '5'];
+  radiusOptions = ['-3', '-2', '-1', '1', '2', '3', '4', '5'];
   selectedRadius: string[] = [];
 
   zoomIn(){
