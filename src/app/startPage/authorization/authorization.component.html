@@ -8,7 +8,8 @@
     <input type="password" id="passwordRegistration" [(ngModel)]="registrationPassword" name="password" required>
 
     <label for="passwordRegistrationVerification">Повторите пароль:</label>
-    <input type="password" id="passwordRegistrationVerification" [(ngModel)]="registrationPasswordVerification" name="password" required>
+    <input type="password" id="passwordRegistrationVerification" [(ngModel)]="registrationPasswordVerification"
+           name="password" required>
 
     <button class="enter" type="submit">Зарегистрироваться</button>
   </form>
@@ -28,11 +29,10 @@
 
 <p-messages [showTransitionOptions]="'500ms'" [hideTransitionOptions]="'500ms'"></p-messages>
 <button type="button" pButton class="p-button-secondary" (click)="clear()" label="Почистить уведомления:D"></button>
-
 <nav>
-  @if (validUser) {
+  @if (UserService.active_account) {
     <button class="toMainPage" routerLink="/main">К главной странице</button>
   } @else {
-    <button class="toMainPage" disabled="true">К главной странице</button>
+    <button class="toMainPage" disabled>К главной странице</button>
   }
 </nav>

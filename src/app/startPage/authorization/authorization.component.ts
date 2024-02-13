@@ -1,12 +1,17 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {HttpService} from "../../UtilsAndServices/HttpService";
 import {User} from "../User";
 import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
 import {ButtonModule} from "primeng/button";
 import {MessageService} from "primeng/api";
+import {UserService} from "../../UtilsAndServices/UserService";
+import {ResultKeeperService} from "../../UtilsAndServices/ResultKeeperService";
+import {TableComponent} from "../../mainPage/main/tableResults/table.component";
+import {Result} from "../../mainPage/main/Result";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: "registration",
@@ -16,15 +21,16 @@ import {MessageService} from "primeng/api";
     RouterLink,
     MessageModule,
     MessagesModule,
-    ButtonModule
+    ButtonModule,
+    NgIf
   ],
   styleUrl: 'authorization.component.css',
   templateUrl: "authorization.component.html",
-  providers: [HttpService,MessageService]
+  providers: [HttpService,MessageService,UserService,ResultKeeperService]
 })
 
-export class AuthorizationComponent{
-  validUser = false;
+export class AuthorizationComponent implements OnInit{
+  link = '';
   registrationLogin: string = '';
   registrationPassword: string = '';
 
@@ -32,7 +38,14 @@ export class AuthorizationComponent{
   loginPassword: string = '';
   registrationPasswordVerification: string = '';
 
-  constructor(private http:HttpService,private messageService: MessageService) {
+
+  //тест !PROTECTED userService
+  constructor(private http:HttpService,private messageService: MessageService,private router:Router) {
+  }
+
+  ngOnInit(): void {
+    // this.resultKeeper.results
+
   }
 
   addSingleMessage(body:{}) {
@@ -40,36 +53,50 @@ export class AuthorizationComponent{
   }
   logIn(login:string,password:string){
     if(login != "" || password != ""){
+      ResultKeeperService.results = [];
       let user:User = new User(login,password);
       this.http.getUserPost(user).subscribe({
         next:(data:any)=>{
           switch(data) {
             case "USER_VALID":
-              this.validUser = true;
+              //тест
+              UserService.active_account = user;
+              console.log("акаунт присовоен: ");
+              console.log(UserService.active_account);
+              this.http.getAllPreviousResults()?.subscribe({
+                next:(data:any)=>{
+                  ResultKeeperService.results = data;
+                  this.router.navigate(['main']);
+                },error: err=>console.error(err)
+              })
+
               break;
             case "USER_NOT_FOUND":
               let userNotFound = {severity:'error', summary:'Вход', detail:'Пользователя с таким логином не существует'};
               this.addSingleMessage(userNotFound);
-              this.validUser = false;
+              //тест
+
               break;
             case "PASSWORD_INVALID":
               let passwordInvalid = {severity:'error', summary:'Вход', detail:'Неправильный пароль'};
               this.addSingleMessage(passwordInvalid);
-              this.validUser = false;
+              //тест
               break;
             default:
               let somethingWentWrong = {severity:'error', summary:'Вход', detail:'Что-то пошло не так'};
               this.addSingleMessage(somethingWentWrong);
-              this.validUser = false;
+              //тест
               break;
           }
-        },error: err => console.error(err)
+        },error: error => {
+          this.addSingleMessage({severity: 'error', summary: 'Вход', detail: error.message})
+        }
       });
       return new User(login,password);
     }
     else{
       console.error("не удалось найти пользователя");
-      this.validUser = false;
+      //тест
       return null;
     }
   }
@@ -123,25 +150,49 @@ export class AuthorizationComponent{
     if (this.validateUserData(login,password,verificationPassword)) {
       let user: User = new User(login, password);
 
-      this.http.newUserPost(user).subscribe({
+      console.log("субскрайб:" + this.http.newUserPost(user).subscribe({
+
         next: (data: any) => {
-          if (data == "SUCCESSFULLY_CREATED") {
-            this.validUser = true;
+          console.log(data);
+          switch(data) {
+            case "SUCCESSFULLY_CREATED":
+                UserService.active_account = user;
+              //тест
+              this.router.navigate(['main']);
+              break;
+            case "USER_ALREADY_EXIST":
+              let userAlreadyExist = {severity:'error', summary:'Регистрация', detail:'Пользователь с таким логином уже существует'};
+              this.addSingleMessage(userAlreadyExist);
+              //тест
+              this.router.navigate(['accessDenied']);
+              break;
+            default:
+              let somethingWentWrong = {severity:'error', summary:'Регистрация', detail:'Что-то пошло не так'};
+              this.addSingleMessage(somethingWentWrong);
+              //тест
+              break;
           }
-          else if(data == "USER_ALREADY_EXIST"){
-            this.validUser = false;
-          }
-        }, error: error => console.log(error)
-      })
-      this.validUser = true;
+
+        }, error: error => {
+          this.addSingleMessage({severity: 'error', summary: 'Регистрация', detail: error.message})
+        }}))
     }
   else{
       console.error("invalid login or password");
-      this.validUser = false;
+
     }
   }
   clear() {
     this.messageService.clear();
   }
 
+  protected readonly UserService = UserService;
+
+  sendSMTHNG(link:string) {
+    this.http.sendSMTH(link).subscribe({
+      next: (data: any) => {
+        console.log(data);
+      }
+    })
+  }
 }
