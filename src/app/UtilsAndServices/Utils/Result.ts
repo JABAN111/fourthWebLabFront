@@ -1,5 +1,4 @@
-import {User} from "../../startPage/User";
-
+import {User} from "./User";
 export class Result {
   constructor(
     private _x: number,

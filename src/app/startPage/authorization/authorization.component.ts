@@ -1,14 +1,16 @@
-import {Component, OnInit} from "@angular/core";
+import {Component} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {HttpService} from "../../UtilsAndServices/Services/HttpService";
-import {User} from "../User";
+import {User} from "../../UtilsAndServices/Utils/User";
 import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
 import {ButtonModule} from "primeng/button";
 import {MessageService} from "primeng/api";
 import {UserService} from "../../UtilsAndServices/Services/UserService";
 import {ResultKeeperService} from "../../UtilsAndServices/Services/ResultKeeperService";import {NgIf} from "@angular/common";
+import {ToastModule} from "primeng/toast";
+import {HeaderComponent} from "../../header/header.component";
 
 @Component({
   selector: "registration",
@@ -19,7 +21,9 @@ import {ResultKeeperService} from "../../UtilsAndServices/Services/ResultKeeperS
     MessageModule,
     MessagesModule,
     ButtonModule,
-    NgIf
+    NgIf,
+    ToastModule,
+    HeaderComponent
   ],
   styleUrl: 'authorization.component.css',
   templateUrl: "authorization.component.html",
@@ -34,12 +38,12 @@ export class AuthorizationComponent {
   loginPassword: string = '';
   registrationPasswordVerification: string = '';
 
-  protected readonly UserService = UserService;
   constructor(private http:HttpService,private messageService: MessageService,private router:Router) {
   }
   addSingleMessage(body:{}) {
     this.messageService.add(body);
   }
+
   logIn(login:string,password:string){
     if(login != "" || password != ""){
       ResultKeeperService.results = [];
@@ -147,8 +151,5 @@ export class AuthorizationComponent {
           this.addSingleMessage({severity: 'error', summary: 'Регистрация', detail: error.message})
         }})
     }
-  }
-  clearNotifications() {
-    this.messageService.clear();
   }
 }

@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from "@angular/core";
-import {Result} from "../../mainPage/main/Result";
+import {Result} from "../Utils/Result";
 import {HttpService} from "./HttpService";
-import {User} from "../../startPage/User";
+import {User} from "../Utils/User";
 
 @Injectable({
   providedIn: 'root'

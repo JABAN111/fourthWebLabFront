@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {User} from "../startPage/User";
-import {Result} from "../mainPage/main/Result";
+import {User} from "../Utils/User";
+import {Result} from "../Utils/Result";
 import {UserService} from "./UserService";
 
 @Injectable()
@@ -20,7 +20,6 @@ export class HttpService{
   }
   public newUserPost(newUser:User){
     const body = {login: newUser.login, password: newUser.password};
-    console.log('отправляем пользователя по ссылке: ' + this.defaultLink+"/users");
     return this.http.post(this.defaultLink+"/users", body);
   }
   getAllPreviousResults(){

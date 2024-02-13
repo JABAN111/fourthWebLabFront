@@ -10,7 +10,6 @@
     <label for="passwordRegistrationVerification">Повторите пароль:</label>
     <input type="password" id="passwordRegistrationVerification" [(ngModel)]="registrationPasswordVerification"
            name="password" required>
-
     <button class="enter" type="submit">Зарегистрироваться</button>
   </form>
 </div>
@@ -26,6 +25,4 @@
     <button pButton class="enter" type="submit">Войти</button>
   </form>
 </div>
-
-<p-messages [showTransitionOptions]="'500ms'" [hideTransitionOptions]="'500ms'"></p-messages>
-<button type="button" pButton class="p-button-secondary" (click)="clearNotifications()" label="Почистить уведомления:D"></button>
+<p-toast [showTransitionOptions]="'500ms'" [hideTransitionOptions]="'500ms'"></p-toast>

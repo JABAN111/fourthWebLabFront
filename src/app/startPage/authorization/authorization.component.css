@@ -2,11 +2,6 @@
   display: flex;
   justify-content: space-between;
 }
-p-messages {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-}
 div {
   width: 300px;
   margin: 20px;
