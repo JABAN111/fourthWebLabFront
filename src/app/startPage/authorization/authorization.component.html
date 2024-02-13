@@ -28,11 +28,4 @@
 </div>
 
 <p-messages [showTransitionOptions]="'500ms'" [hideTransitionOptions]="'500ms'"></p-messages>
-<button type="button" pButton class="p-button-secondary" (click)="clear()" label="Почистить уведомления:D"></button>
-<nav>
-  @if (UserService.active_account) {
-    <button class="toMainPage" routerLink="/main">К главной странице</button>
-  } @else {
-    <button class="toMainPage" disabled>К главной странице</button>
-  }
-</nav>
+<button type="button" pButton class="p-button-secondary" (click)="clearNotifications()" label="Почистить уведомления:D"></button>
