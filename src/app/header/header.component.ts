@@ -1,12 +1,13 @@
 import {Component} from "@angular/core";
 import {ClockComponent} from "./clock/clock.component";
+import {NgOptimizedImage} from "@angular/common";
 
 
 @Component({
   selector: "head-data",
   standalone: true,
   styleUrl: "header.component.css",
-  imports: [ClockComponent],
+  imports: [ClockComponent, NgOptimizedImage],
   templateUrl: "headerPart.html"
 })
 export class HeaderComponent{
