@@ -1,24 +1,12 @@
 <head>
   <title>Основная страница</title>
-<!--  <style>-->
-<!--    .canvas-container {-->
-<!--      border: 2px solid #ccc;-->
-<!--      display: inline-block;-->
-<!--      overflow: hidden;-->
-<!--      transition: width 0.3s, height 0.3s;-->
-<!--      position: fixed;-->
-<!--      top: 0;-->
-<!--      right: 0;-->
-<!--      margin-top: 200px;-->
-<!--      margin-right: 50px;-->
-<!--    }-->
-
-<!--    canvas {-->
-<!--      image-rendering: pixelated;-->
-<!--      max-width: 100%;-->
-<!--      display: block;-->
-<!--    }-->
-<!--  </style>-->
+  <style>
+    p-messages {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
 
 </head>
 <head-data></head-data>
@@ -67,18 +55,18 @@
     </div>
 
     <br>
+
+    <p-toast></p-toast>
     <button pButton pRipple label="Отправить" class="p-button-success" (click)="submitForm();"></button>
     <br>
     <button pButton pRipple label="Очистить все" class="p-button-success" (click)="clearAll();"></button>
   </form><br>
-  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="zoomIn();"></p-button><br>
-  <p-button label="Normal" icon="pi pi-check" (click)="zoomToDefault();"></p-button>
+  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="ctx.zoomIn();"></p-button><br>
+  <p-button label="Normal" icon="pi pi-check" (click)="ctx.zoomToDefault();"></p-button>
 </div>
 
+ <canvas #myCanvas (click)="clickSender($event)" width="300" height="300"></canvas>
 
-<div class="canvas-container" [style.width.px]="w" [style.height.px]="h">
-  <canvas #myCanvas (click)="mouseHandler($event)" width="300" height="300"></canvas>
-</div>
 <p-table [value]="results" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
   <ng-template pTemplate="header">
     <tr>
