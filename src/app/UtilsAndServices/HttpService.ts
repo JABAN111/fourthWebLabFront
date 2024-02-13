@@ -1,31 +1,58 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {User} from "../startPage/User";
-import {resetParseTemplateAsSourceFileForTest} from "@angular/compiler-cli/src/ngtsc/typecheck/diagnostics";
+import {Result} from "../mainPage/main/Result";
+import {UserService} from "./UserService";
 
 @Injectable()
 export class HttpService{
 
+  defaultLink:string = "http://localhost:23210";
   constructor(private http: HttpClient){ }
+
 
   public getUserPost(user:User){
     const body = {
       login: user.login,
       password: user.password
     }
-    return this.http.post(`http://localhost:8080/users/check`,body);
+    return this.http.post(this.defaultLink+"/users/check",body);
   }
   public newUserPost(newUser:User){
     const body = {login: newUser.login, password: newUser.password};
-    return this.http.post("http://localhost:8080/users", body);
+    console.log('отправляем пользователя по ссылке: ' + this.defaultLink+"/users");
+    return this.http.post(this.defaultLink+"/users", body);
   }
-
-  getResults(){
-    return this.http.get("http://localhost:8080/results")
+  getAllPreviousResults(){
+    if(UserService.active_account != undefined) {
+      let activeUser:User = UserService.active_account;
+      const body = {
+        login: activeUser.login,
+        password: activeUser.password
+      }
+      return this.http.post(this.defaultLink + "/result/getAllByUser",body);
+    }
+    return null;
   }
-  //просто в тестовом формате для сбора данных с json файла
-  getData(){
-    return this.http.get("assets/data/data.json")
+  clearResults(user:User){
+    const body =
+      {
+        login: user.login,
+        password: user.password
+      }
+    return this.http.post(this.defaultLink+'/results/deleteRes',body);
   }
-
+  getResult(result:Result){
+    const body = {
+      x: result.x,
+      y: result.y,
+      r: result.r,
+      date: result.date,
+      user: {
+        login: result.user_id.login,
+        password: result.user_id.password
+      }
+    }
+    return this.http.post(this.defaultLink+"/results", body);
+  }
 }
