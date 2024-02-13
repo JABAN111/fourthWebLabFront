@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Injectable, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import {HeaderComponent} from "../header/header.component";
 import {SliderModule} from "primeng/slider";
 import {FormsModule} from "@angular/forms";
@@ -9,7 +9,14 @@ import {
   CanActivate, Router,
   RouterOutlet,
 } from "@angular/router";
-import {UserService} from "../test/auth/UserService";
+import {UserService} from "../UtilsAndServices/UserService";
+import {HttpService} from "../UtilsAndServices/HttpService";
+import {Result} from "./main/Result";
+import {User} from "../startPage/User";
+import {ResultKeeperService} from "../UtilsAndServices/ResultKeeperService";
+import {TableComponent} from "./main/tableResults/table.component";
+import {TableModule} from "primeng/table";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: "main",
@@ -21,22 +28,31 @@ import {UserService} from "../test/auth/UserService";
     MultiSelectModule,
     RippleModule,
     ButtonModule,
+    TableComponent,
+    TableModule,
+    DatePipe
   ],
   templateUrl: "mainPage.component.html",
-  providers: [UserService,RouterOutlet]
+  providers: [UserService,RouterOutlet,HttpService,
+  ResultKeeperService]
 })
-@Injectable()
-export class MainPageComponent implements AfterViewInit, CanActivate {
 
-  constructor(private userService:UserService,private router: Router) {
+export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
+  results:Result[] = [];
+
+
+  constructor(private http:HttpService,private router: Router) {
   }
 
+  ngOnInit(): void {
+        this.results = ResultKeeperService.results;
+  }
   canActivate(){
-      if(UserService.validUser){
+      if(UserService.active_account){
         return true;
       }
       else{
-        //тест ссылка на accessDenied
+        console.error('Для доступа необходимо войти в аккаунт');
         this.router.navigate(['/accessDenied'])
         return false;
       }
@@ -55,6 +71,9 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
   ngAfterViewInit(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.drawCanvas();
+    for(let result of ResultKeeperService.results){
+      this.printDotOnGraphByResult(result);
+    }
   }
 
   drawCanvas(): void {
@@ -66,13 +85,11 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
         section.draw();
       }
       this.drawAxesAndHatch()
-      this.numCoord();
-
+      this.numCord();
     }
   }
 
   mouseHandler(event:MouseEvent){
-    console.log("мы в мышке");
     const rect = this.canvas.nativeElement.getBoundingClientRect();
     this.mouse.x = event.clientX - rect.left;
     this.mouse.y = event.clientY - rect.top;
@@ -84,14 +101,17 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
 
     const x = ((((clickedX - w / 2) / this.hatchGap) / 2) * this.currentRadius).toFixed(3);
     const y = ((-((clickedY - h / 2) / this.hatchGap) / 2) * this.currentRadius).toFixed(3);
+    if(UserService.active_account != null) {
+      let resultToSend: Result = new Result(+x, +y, this.currentRadius, new Date(), null, UserService.active_account);
+      this.processingResultFromServer(resultToSend);
+    }
 
-    this.printDotOnGraph(+x,+y,true);
     return {
       x: parseFloat(x),
       y: parseFloat(y),
     };
   }
-  numCoord(): void {
+  numCord(): void {
     if (this.currentRadius === null)
       return;
     this.ctx!.font = "20px Segue UI";
@@ -202,7 +222,7 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
     }
   ];
   setRadius(newRadius: number) {
-    console.log("Пришло значение = " + newRadius);
+    this.selectedRadius = [];
     this.currentRadius = newRadius;
     this.drawCanvas();
   }
@@ -212,11 +232,13 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
   selectedY: number = 2.5;
 
   radiusOptions = ['-3', '-2', '-1', '1', '2', '3', '4', '5'];
-  selectedRadius: string[] = [];
+  selectedRadius: string[] = ['2'];
 
   zoomIn(){
     this.canvas.nativeElement.height += 100;
     this.h += 100;
+    this.hatchGap += 15;
+
 
     this.canvas.nativeElement.width += 100;
     this.w += 100;
@@ -226,38 +248,73 @@ export class MainPageComponent implements AfterViewInit, CanActivate {
   zoomToDefault(){
     this.canvas.nativeElement.height = 300;
     this.h = 300;
+    this.hatchGap = 56;
 
     this.canvas.nativeElement.width = 300;
     this.w = 300;
     this.drawCanvas();
+    for (let result of this.results){
+      this.printDotOnGraphByResult(result);
+    }
   }
   updateRadius(){
     let radius = this.validatorValue(this.selectedRadius)
     if(radius){
       this.setRadius(radius);
     }
+    //add old results
+    for (let result of this.results){
+      this.printDotOnGraphByResult(result);
+    }
   }
+
   validatorValue(selectedOption: string[]){
     if(selectedOption.length != 1){
-      //заменить бы
+      //тест
       throw new Error("invalid radius");
     }
     return +selectedOption[0];
   }
   clearAll(){
     this.drawCanvas();
+    ResultKeeperService.results = [];
+    this.results = ResultKeeperService.results;
+    this.http.clearResults(<User> UserService.active_account).subscribe({
+      next:(data:any) => {
+        console.log(data);
+      },error: err => console.error(err)
+    });
+    console.log('почистили?');
+  }
+  addResult(newResult:Result){
+    this.printDotOnGraphByResult(newResult);
+    // this.results.push(newResult);
+    ResultKeeperService.results.push(newResult);
+    console.log('Результат сохранен');
+  }
+
+  processingResultFromServer(resultToSend:Result){
+    let resultResponse:Result;
+    this.http.getResult(resultToSend).subscribe({
+      next:(data:any) => {
+        resultResponse = new Result(data.x,data.y,data.r,new Date(),data.hit,data.user);
+        this.addResult(resultResponse);
+        return resultResponse;
+      },error: err => console.error(err)
+    });
   }
   submitForm() {
     let x = this.validatorValue(this.selectedX);
     let y = this.selectedY;
-    if(x != null || y != null) {
-      //временно always true
-      this.printDotOnGraph(x, y, true);
+    if(UserService.active_account != null) {
+      let user:User = UserService.active_account;
+      let resultToSend: Result = new Result(x, y, this.currentRadius, new Date(), null, user);
+      this.processingResultFromServer(resultToSend);
     }
-    // Handle form submission logic here
-    console.log('Form submitted:', { selectedX: this.selectedX, selectedY: this.selectedY, selectedRadius: this.selectedRadius });
   }
-
+  printDotOnGraphByResult(result:Result){
+    this.printDotOnGraph(result.x,result.y,result.hit);
+  }
   printDotOnGraph(xCenter:  number, yCenter: number, isHit: boolean | null): void {
     if (isHit !== null){
       this.ctx!.fillStyle = isHit ? '#1AFF00' : '#ff0000';

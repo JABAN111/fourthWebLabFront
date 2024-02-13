@@ -1,30 +1,30 @@
 <head>
   <title>Основная страница</title>
-  <style>
-    .canvas-container {
-      border: 2px solid #ccc;
-      display: inline-block;
-      overflow: hidden;
-      transition: width 0.3s, height 0.3s;
-      position: fixed;
-      top: 0;
-      right: 0;
-      margin-top: 200px;
-      margin-right: 50px;
-    }
+<!--  <style>-->
+<!--    .canvas-container {-->
+<!--      border: 2px solid #ccc;-->
+<!--      display: inline-block;-->
+<!--      overflow: hidden;-->
+<!--      transition: width 0.3s, height 0.3s;-->
+<!--      position: fixed;-->
+<!--      top: 0;-->
+<!--      right: 0;-->
+<!--      margin-top: 200px;-->
+<!--      margin-right: 50px;-->
+<!--    }-->
 
-    canvas {
-      image-rendering: pixelated;
-      max-width: 100%;
-      display: block;
-    }
-  </style>
+<!--    canvas {-->
+<!--      image-rendering: pixelated;-->
+<!--      max-width: 100%;-->
+<!--      display: block;-->
+<!--    }-->
+<!--  </style>-->
 
 </head>
 <head-data></head-data>
 <!--кнопки-->
 <div class="form-container">
-  <form #form="ngForm">
+  <form >
     <div class="form-group">
       <label for="xCoordinate">Координата X</label>
       <p-multiSelect
@@ -36,6 +36,7 @@
         id="xCoordinate"
       ></p-multiSelect>
     </div>
+    <br>
     <div class="form-group">
 
 
@@ -50,6 +51,7 @@
       ></p-slider>
 
     </div>
+    <br>
 
     <div class="form-group">
       <label for="radius">Радиус области</label>
@@ -63,13 +65,39 @@
         (onChange)="updateRadius()"
       ></p-multiSelect>
     </div>
+
+    <br>
     <button pButton pRipple label="Отправить" class="p-button-success" (click)="submitForm();"></button>
+    <br>
     <button pButton pRipple label="Очистить все" class="p-button-success" (click)="clearAll();"></button>
-  </form>
-  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="zoomIn();"></p-button>
+  </form><br>
+  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="zoomIn();"></p-button><br>
   <p-button label="Normal" icon="pi pi-check" (click)="zoomToDefault();"></p-button>
 </div>
 
+
 <div class="canvas-container" [style.width.px]="w" [style.height.px]="h">
-<canvas #myCanvas (click)="mouseHandler($event)" width="300" height="300"></canvas>
+  <canvas #myCanvas (click)="mouseHandler($event)" width="300" height="300"></canvas>
 </div>
+<p-table [value]="results" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>R</th>
+      <th>Дата</th>
+      <th>Статус попадания</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-result>
+    <tr>
+      <td>{{result.x.toFixed(3)}}</td>
+      <td>{{result.y.toFixed(3)}}</td>
+      <td>{{result.r}}</td>
+      <td>{{result.date | date: "HH:mm:ss"}}</td>
+      <td>{{result.hit ? '✔' : '❌'}}</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
