@@ -1,11 +1,10 @@
 import {Component } from "@angular/core";
 import { RouterOutlet} from "@angular/router";
-import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: "my-app",
   standalone: true,
-  imports: [RouterOutlet, HttpClientModule],
+  imports: [RouterOutlet],
   styleUrl: "app.component.css",
   templateUrl: "app.component.html",
 })
