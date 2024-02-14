@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {HttpService} from "../../UtilsAndServices/Services/HttpService";
@@ -30,7 +30,7 @@ import {HeaderComponent} from "../../header/header.component";
   providers: [HttpService,MessageService,UserService,ResultKeeperService]
 })
 
-export class AuthorizationComponent {
+export class AuthorizationComponent implements OnInit{
   registrationLogin: string = '';
   registrationPassword: string = '';
 
@@ -40,12 +40,24 @@ export class AuthorizationComponent {
 
   constructor(private http:HttpService,private messageService: MessageService,private router:Router) {
   }
+
+  ngOnInit(): void {
+    // @ts-ignore
+    let lastLogin:string = localStorage.getItem('login');
+    // @ts-ignore
+    let lastPassword:string = localStorage.getItem('login');
+      if(lastLogin != null
+        || lastPassword != null){
+        this.logIn(lastLogin,lastPassword);
+      }
+
+    }
   addSingleMessage(body:{}) {
     this.messageService.add(body);
   }
 
-  logIn(login:string,password:string){
-    if(login != "" || password != ""){
+  logIn(login:string, password:string){
+    if(login != '' || password != ""){
       ResultKeeperService.results = [];
       let user:User = new User(login,password);
       this.http.getUserPost(user).subscribe({
@@ -53,10 +65,13 @@ export class AuthorizationComponent {
           switch(data) {
             case "USER_VALID":
               UserService.active_account = user;
+              localStorage.setItem("login",UserService.active_account.login);
+              localStorage.setItem("password",UserService.active_account.password);
               this.http.getAllPreviousResults()?.subscribe({
                 next:(data:any)=>{
                   ResultKeeperService.results = data;
                   this.router.navigate(['main']);
+                  // console.log('должны перейти к main');
                 },error: err=>this.addSingleMessage({severity:'error', summary:'Вход', detail: err.message})
               })
               break;
@@ -136,6 +151,8 @@ export class AuthorizationComponent {
           switch(data) {
             case "SUCCESSFULLY_CREATED":
               UserService.active_account = user;
+              localStorage.setItem("login",UserService.active_account.login);
+              localStorage.setItem("password",UserService.active_account.password);
               this.router.navigate(['main']);
               break;
             case "USER_ALREADY_EXIST":

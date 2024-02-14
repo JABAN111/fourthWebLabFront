@@ -1,10 +1,12 @@
-import {Injectable, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {User} from "../Utils/User";
 import {Result} from "../Utils/Result";
 import {UserService} from "./UserService";
+import {Injectable} from "@angular/core";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class HttpService{
 
   defaultLink:string = "http://localhost:23210";
@@ -18,6 +20,7 @@ export class HttpService{
     }
     return this.http.post(this.defaultLink+"/users/check",body);
   }
+
   public newUserPost(newUser:User){
     const body = {login: newUser.login, password: newUser.password};
     return this.http.post(this.defaultLink+"/users", body);
