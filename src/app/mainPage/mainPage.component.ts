@@ -5,7 +5,7 @@ import {FormsModule} from "@angular/forms";
 import {MultiSelectModule} from "primeng/multiselect";
 import {RippleModule} from "primeng/ripple";
 import {ButtonModule} from "primeng/button";
-import {CanActivate, Router, RouterOutlet} from "@angular/router";
+import { Router, RouterOutlet} from "@angular/router";
 import {UserService} from "../UtilsAndServices/Services/UserService";
 import {HttpService} from "../UtilsAndServices/Services/HttpService";
 import {Result} from "../UtilsAndServices/Utils/Result";
@@ -17,6 +17,7 @@ import {CanvasService} from "../UtilsAndServices/Services/CanvasService";
 import {MessageService} from "primeng/api";
 import {MessagesModule} from "primeng/messages";
 import {ToastModule} from "primeng/toast";
+import {StyleClassModule} from "primeng/styleclass";
 
 @Component({
   selector: "main",
@@ -31,8 +32,10 @@ import {ToastModule} from "primeng/toast";
     TableModule,
     DatePipe,
     MessagesModule,
-    ToastModule
+    ToastModule,
+    StyleClassModule
   ],
+  styleUrl: "mainPage.component.css",
   templateUrl: "mainPage.component.html",
   providers: [UserService, RouterOutlet, HttpService,
     ResultKeeperService, CanvasService,MessageService
@@ -72,7 +75,7 @@ export class MainPageComponent implements AfterViewInit, OnInit {
         ResultKeeperService.results = data;
         this.results=data;
         this.addOldDotsOnPage();
-      },error: err=>console.error('')
+      }
     })
   }
   clickSender(event:MouseEvent){
@@ -122,7 +125,6 @@ export class MainPageComponent implements AfterViewInit, OnInit {
       next: (data: any) => {
         resultResponse = new Result(data.x, data.y, data.r, new Date(), data.hit, data.user);
         this.addResult(resultResponse);
-        this.messageService.add({severity: 'success', summary: 'Успех', detail: 'Данные отправлены' })
         return resultResponse;
       }, error: err => console.error(err)
     });
@@ -146,9 +148,7 @@ export class MainPageComponent implements AfterViewInit, OnInit {
     ResultKeeperService.results = [];
     this.results = ResultKeeperService.results;
     this.http.clearResults(<User> UserService.active_account).subscribe({
-      next:(data:any) => {
-        console.log(data);
-      },error: err => console.error(err)
+
     });
   }
 

@@ -4,6 +4,11 @@
   width: 40px;
   height: 40px;
 }
-
-
+  #rightImages,#leftImages{
+    display:flex;
+    justify-content: end;
+  }
+  .header-info{
+    font-size: 20px;
+  }
 }

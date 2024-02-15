@@ -9,9 +9,10 @@ import {AuthorizationComponent} from "./authorization/authorization.component";
     HeaderComponent,
     AuthorizationComponent
   ],
+  styleUrl: "startPage.component.css",
   template: `
-    <head-data></head-data>
-    <registration></registration>
+        <head-data></head-data>
+        <registration></registration>
   `
 })
 

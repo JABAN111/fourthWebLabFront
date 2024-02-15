@@ -1,5 +1,4 @@
 import {ElementRef, Inject, Injectable} from '@angular/core';
-import {UserService} from "./UserService";
 import {Result} from "../Utils/Result";
 import {User} from "../Utils/User";
 
@@ -12,6 +11,7 @@ export class CanvasService {
 
   //default value: 2
   private currentRadius = 2;
+  color = "#2196F3"
 
   constructor(private ctx: CanvasRenderingContext2D | null, private canvas: ElementRef<HTMLCanvasElement>, @Inject(Result) private results: Result[]) {
   }
@@ -21,7 +21,7 @@ export class CanvasService {
       name: 'first_quarter',
       draw: () => {
         this.ctx?.beginPath();
-        this.ctx!.fillStyle = "#0b04D5";
+        this.ctx!.fillStyle = this.color;
 
         this.ctx?.moveTo(this.w / 2, this.h / 2);
         this.ctx?.arc(this.w / 2, this.h / 2, this.hatchGap * 2, 0, -Math.PI / 2, true);
@@ -34,7 +34,7 @@ export class CanvasService {
       name: "third_quarter",
       draw: () => {
         this.ctx?.beginPath();
-        this.ctx!.fillStyle = "#0b04D5";
+        this.ctx!.fillStyle = this.color;
 
         this.ctx?.moveTo(this.w / 2 - this.hatchGap * 2, this.h / 2);
         this.ctx?.lineTo(this.w / 2, this.h / 2 + this.hatchGap);
@@ -48,7 +48,7 @@ export class CanvasService {
       name: "fourth_quarter",
       draw: () => {
         this.ctx?.beginPath();
-        this.ctx!.fillStyle = "#0B04D5";
+        this.ctx!.fillStyle = this.color;
 
         this.ctx?.moveTo(this.w / 2, this.h / 2 + this.hatchGap);
         this.ctx?.lineTo(this.w / 2 + this.hatchGap * 2, this.h / 2 + this.hatchGap);

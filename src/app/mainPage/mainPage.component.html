@@ -1,19 +1,11 @@
-<head>
-  <title>Основная страница</title>
-  <style>
-    p-messages {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-    }
-  </style>
-
-</head>
 <head-data></head-data>
+<div id="canvasContainer">
+<canvas #myCanvas (click)="clickSender($event)" width="300" height="300"></canvas>
+</div>
 <!--кнопки-->
 <div class="form-container">
-  <form >
-    <div class="form-group">
+  <form>
+    <div id = "xPart" class="form-group">
       <label for="xCoordinate">Координата X</label>
       <p-multiSelect
         [options]="xOptions"
@@ -25,7 +17,7 @@
       ></p-multiSelect>
     </div>
     <br>
-    <div class="form-group">
+    <div class="form-group" id="yCord">
 
 
       <label for="yCoordinate">Координата Y</label>
@@ -37,10 +29,8 @@
                 class="w-full"
                 [ngModelOptions]="{standalone: true}"
       ></p-slider>
-
     </div>
     <br>
-
     <div class="form-group">
       <label for="radius">Радиус области</label>
       <p-multiSelect
@@ -53,40 +43,44 @@
         (onChange)="updateRadius()"
       ></p-multiSelect>
     </div>
-
     <br>
-
     <p-toast></p-toast>
-    <button pButton pRipple label="Отправить" class="p-button-success" (click)="submitForm();"></button>
-    <br>
-    <button pButton pRipple label="Очистить все" class="p-button-success" (click)="clearAll();"></button>
-  </form><br>
-  <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="ctx.zoomIn();"></p-button><br>
-  <p-button label="Normal" icon="pi pi-check" (click)="ctx.zoomToDefault();"></p-button>
+    <div id = "buttons">
+      <button pButton pRipple label="Отправить" class="p-button-success" (click)="submitForm();"></button>
+
+      <button pButton pRipple label="Очистить все" class="p-button-success" (click)="clearAll();"></button>
+      <button pButton id="logOut" type="submit" (click)="logOut()">Выйти</button>
+
+    </div>
+  </form>
 </div>
-<button pButton id="logOut" type="submit" (click)="logOut()">Выйти</button>
-
-<canvas #myCanvas (click)="clickSender($event)" width="300" height="300"></canvas>
-
-<p-table [value]="results" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
+<br><br><br>
+<div id="results-table">
+<p-table  [value]="results.reverse()" [scrollable]="true" scrollHeight="250px" [tableStyle]="{
+  'width': '50%',
+  'margin-left': 'auto',
+  'margin-right': 'auto',
+}" class="p-table"
+  pStyleClass="pStyleClass"
+>
   <ng-template pTemplate="header">
     <tr>
-      <th>x</th>
-      <th>y</th>
-      <th>R</th>
-      <th>Дата</th>
-      <th>Статус попадания</th>
+      <th style="text-align: center;">x</th>
+      <th style="text-align: center;">y</th>
+      <th style="text-align: center;">R</th>
+      <th style="text-align: center;">Дата</th>
+      <th style="text-align: center;">Статус попадания</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-result>
     <tr>
-      <td>{{result.x.toFixed(3)}}</td>
-      <td>{{result.y.toFixed(3)}}</td>
-      <td>{{result.r}}</td>
-      <td>{{result.date | date: "HH:mm:ss"}}</td>
-      <td>{{result.hit ? '✔' : '❌'}}</td>
+      <td style="text-align: center;">{{result.x.toFixed(3)}}</td>
+      <td style="text-align: center;">{{result.y.toFixed(3)}}</td>
+      <td style="text-align: center;">{{result.r}}</td>
+      <td style="text-align: center;">{{result.date | date: "HH:mm:ss"}}</td>
+      <td style="text-align: center;">{{result.hit ? '✔' : '❌'}}</td>
     </tr>
   </ng-template>
 </p-table>
-
+</div>
 

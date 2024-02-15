@@ -1,0 +1,55 @@
+p-messages {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+.form-container{
+  margin-top: 2%;
+  margin-left: 10px;
+
+}
+
+#buttons button {
+  margin: 0 10px;
+}
+#yCord{
+   width: 35%;
+ }
+canvas {
+  float: right;
+  margin-right: 184px;
+  border: red;
+}
+#results-table{
+  margin-top: 5%;
+}
+/*Десктоп*/
+@media screen and (min-width: 1263px){
+  #canvasContainer{
+    margin-top: 2%;
+    margin-right: 184px;
+  }
+
+}
+/*Мобилка*/
+@media screen and (max-width: 642px) {
+  #canvasContainer{
+    margin-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #buttons {
+    display:flex;
+    justify-content: space-between;
+  }
+
+}
+/*планшет*/
+@media screen and (max-width: 1263px) and (min-width: 643px){
+  #canvasContainer{
+    margin-top: 5%;
+  }
+
+}
+

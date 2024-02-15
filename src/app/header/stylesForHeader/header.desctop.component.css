@@ -4,5 +4,11 @@
     width: 71px;
     height: 71px;
   }
-
+  #rightImages,#leftImages{
+    display:flex;
+    justify-content: end;
+  }
+  .header-info{
+    font-size: 27px;
+  }
 }

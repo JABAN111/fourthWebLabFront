@@ -3,5 +3,12 @@
     width: 60px;
     height: 60px;
   }
+  #rightImages,#leftImages{
+    display:flex;
+    justify-content: end;
+  }
+  .header-info{
+    font-size: 25px;
+  }
 
 }
