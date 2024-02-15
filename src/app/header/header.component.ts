@@ -6,7 +6,7 @@ import {NgOptimizedImage} from "@angular/common";
 @Component({
   selector: "head-data",
   standalone: true,
-  styleUrl: "header.component.css",
+  styleUrl: "stylesForHeader/header.component.css",
   imports: [ClockComponent, NgOptimizedImage],
   templateUrl: "headerPart.html"
 })

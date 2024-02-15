@@ -1,4 +1,5 @@
-<div>
+
+<div id="register">
   <h2>Регистрация</h2>
   <form (ngSubmit)="registerNewUser(registrationLogin, registrationPassword,registrationPasswordVerification)">
     <label for="loginRegistration">Логин:</label>
@@ -13,7 +14,7 @@
     <button class="enter" type="submit">Зарегистрироваться</button>
   </form>
 </div>
-<div>
+<div id="login" >
   <h2>Войти</h2>
   <form (ngSubmit)="logIn(loginLogin, loginPassword)">
     <label for="loginLogin">Логин:</label>

@@ -11,6 +11,7 @@ import {UserService} from "../../UtilsAndServices/Services/UserService";
 import {ResultKeeperService} from "../../UtilsAndServices/Services/ResultKeeperService";import {NgIf} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {HeaderComponent} from "../../header/header.component";
+import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 @Component({
   selector: "registration",
@@ -25,12 +26,14 @@ import {HeaderComponent} from "../../header/header.component";
     ToastModule,
     HeaderComponent
   ],
-  styleUrl: 'authorization.component.css',
+  styleUrl: 'authorizationStyles/authorization.component.css',
   templateUrl: "authorization.component.html",
   providers: [HttpService,MessageService,UserService,ResultKeeperService]
 })
 
 export class AuthorizationComponent implements OnInit{
+  selectedRegistration: boolean = false;
+
   registrationLogin: string = '';
   registrationPassword: string = '';
 
@@ -42,16 +45,17 @@ export class AuthorizationComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    // @ts-ignore
-    let lastLogin:string = localStorage.getItem('login');
-    // @ts-ignore
-    let lastPassword:string = localStorage.getItem('login');
-      if(lastLogin != null
-        || lastPassword != null){
-        this.logIn(lastLogin,lastPassword);
-      }
-
+    let login = localStorage.getItem('login');
+    let password = localStorage.getItem('password');
+    if(login != null && password != null){
+      // @ts-ignore
+      this.logIn(login,password);
     }
+  }
+  setSelectedRegistration(isRegistration:boolean){
+    this.selectedRegistration = isRegistration;
+  }
+
   addSingleMessage(body:{}) {
     this.messageService.add(body);
   }
