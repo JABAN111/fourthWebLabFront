@@ -4,6 +4,8 @@ import { HttpService } from "../Services/HttpService";
 import { User } from "./User";
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {UserService} from "../Services/UserService";
+import {ResultKeeperService} from "../Services/ResultKeeperService";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,13 @@ export class AuthGuard implements CanActivate {
 
     return this.http.getUserPost(user).pipe(
       map((data: any) => {
-        return data === "USER_VALID";
+        if(data==="USER_VALID"){
+          UserService.active_account = user;
+
+          return true;
+        }
+        return false;
+        // return data === "USER_VALID";
       })
     );
   }

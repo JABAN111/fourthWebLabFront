@@ -64,8 +64,9 @@
   <p-button icon="pi pi-plus"  [rounded]="true" [text]="true" (click)="ctx.zoomIn();"></p-button><br>
   <p-button label="Normal" icon="pi pi-check" (click)="ctx.zoomToDefault();"></p-button>
 </div>
+<button pButton id="logOut" type="submit" (click)="logOut()">Выйти</button>
 
- <canvas #myCanvas (click)="clickSender($event)" width="300" height="300"></canvas>
+<canvas #myCanvas (click)="clickSender($event)" width="300" height="300"></canvas>
 
 <p-table [value]="results" [scrollable]="true" scrollHeight="400px" [tableStyle]="{'min-width': '50rem'}">
   <ng-template pTemplate="header">

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from "@angular/core";
 import {HeaderComponent} from "../header/header.component";
 import {SliderModule} from "primeng/slider";
 import {FormsModule} from "@angular/forms";
@@ -39,7 +39,7 @@ import {ToastModule} from "primeng/toast";
   ]
 })
 
-export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
+export class MainPageComponent implements AfterViewInit, OnInit {
   results: Result[] = [];
 
   xOptions = ['-3', '-2', '-1', '0', '1', '2', '3', '4', '5'];
@@ -57,21 +57,23 @@ export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
   private currentRadius = 2;
 
   constructor(private messageService: MessageService,private http: HttpService, private router: Router) {}
-  ngOnInit(): void {this.results = ResultKeeperService.results;}
-  canActivate() {
-    if (UserService.active_account) {
-      return true;
-    }
-    else {
-      console.error('Для доступа необходимо войти в аккаунт');
-      this.router.navigate(['/accessDenied'])
-      return false;
-    }
+  ngOnInit(): void {this.results = ResultKeeperService.results;
   }
+  // @HostListener('window:beforeunload', ['$event'])
+  // beforeUnloadHandler(event: BeforeUnloadEvent) {
+  //   localStorage.clear();
+  //   this.router.navigate(['/']);
+  // }
   ngAfterViewInit(): void {
     this.ctx = new CanvasService(this.canvas.nativeElement.getContext('2d'), this.canvas, this.results);
     this.ctx.drawCanvas();
-    this.addOldDotsOnPage();
+    this.http.getAllPreviousResults()?.subscribe({
+      next:(data:any)=>{
+        ResultKeeperService.results = data;
+        this.results=data;
+        this.addOldDotsOnPage();
+      },error: err=>console.error('')
+    })
   }
   clickSender(event:MouseEvent){
     if(UserService.active_account) {
@@ -91,7 +93,7 @@ export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
       this.messageService.add({severity:'warn', summary:'Валидация данных', detail: "Должен быть выбран только один радиус"});
       return;
     }
-    let radius = this.validatorValue(this.selectedRadius);
+    let radius = this.validatorValue(this.selectedRadius) ? +this.selectedRadius[0] : null;
     if(radius){
       this.selectedRadius = ['' + radius];
       this.ctx.setRadius(radius);
@@ -106,11 +108,7 @@ export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
     }
   }
   validatorValue(selectedOption: string[]) {
-    if (selectedOption.length != 1) {
-
-      return false;
-    }
-    return +selectedOption[0];
+    return selectedOption.length == 1;
   }
 
   addResult(newResult: Result) {
@@ -136,10 +134,10 @@ export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
       this.messageService.add({severity: 'warn', summary: 'Валидация данных', detail: "Должен быть выбран только один x"});
       return;
     }
-    let x = this.validatorValue(this.selectedX);
+    let x = +this.selectedX[0];
     let y = this.selectedY;
     if (UserService.active_account) {
-      let resultToSend: Result = new Result(+x, y, this.currentRadius, new Date(), null, UserService.active_account);
+      let resultToSend: Result = new Result(x, y, this.currentRadius, new Date(), null, UserService.active_account);
       this.processingResultFromServer(resultToSend);
     }
   }
@@ -152,5 +150,10 @@ export class MainPageComponent implements AfterViewInit, CanActivate, OnInit {
         console.log(data);
       },error: err => console.error(err)
     });
+  }
+
+  logOut() {
+    localStorage.clear();
+    this.router.navigate(['/']);
   }
 }
